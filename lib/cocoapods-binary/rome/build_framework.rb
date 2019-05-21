@@ -14,14 +14,13 @@ def build_for_iosish_platform(sandbox,
                               build_dir, 
                               output_path,
                               target, 
+                              deployment_target,
                               device, 
                               simulator,
                               bitcode_enabled,
                               custom_build_options = [], # Array<String>
                               custom_build_options_simulator = [] # Array<String>
                               )
-
-  deployment_target = target.platform.deployment_target.to_s
   
   target_label = target.label
   Pod::UI.puts "Prebuilding #{target_label}..."
@@ -144,7 +143,7 @@ module Pod
     #         [Pathname] output_path
     #         output path for generated frameworks
     #
-    def self.build(sandbox_root_path, target, output_path, bitcode_enabled = false, custom_build_options=[], custom_build_options_simulator=[])
+    def self.build(sandbox_root_path, target, min_deployment_target, output_path, bitcode_enabled = false, custom_build_options=[], custom_build_options_simulator=[])
     
       return unless not target == nil
     
@@ -154,7 +153,7 @@ module Pod
 
       # -- build the framework
       case target.platform.name
-      when :ios then build_for_iosish_platform(sandbox, build_dir, output_path, target, 'iphoneos', 'iphonesimulator', bitcode_enabled, custom_build_options, custom_build_options_simulator)
+      when :ios then build_for_iosish_platform(sandbox, build_dir, output_path, target, min_deployment_target, 'iphoneos', 'iphonesimulator', bitcode_enabled, custom_build_options, custom_build_options_simulator)
       when :osx then xcodebuild(sandbox, target.label, 'macosx', nil, custom_build_options)
       # when :tvos then build_for_iosish_platform(sandbox, build_dir, target, 'appletvos', 'appletvsimulator')
       # when :watchos then build_for_iosish_platform(sandbox, build_dir, target, 'watchos', 'watchsimulator')
